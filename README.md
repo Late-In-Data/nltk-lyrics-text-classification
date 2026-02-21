@@ -1,4 +1,4 @@
-# Classification de paroles (Rap vs Variété Française) — NLTK & scikit-learn
+# Classification de paroles (Rap vs Variété Française) - NLTK & scikit-learn
 
 ## Objectif
 Construire un pipeline de **text mining / NLP** permettant de **classer des paroles de chansons** en deux catégories :
