@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lyrics-classification"
+version = "0.1.0"
+description = "Classification de paroles de chansons (Rap vs Variété Française)"
+requires-python = ">=3.10"
+dependencies = ["pandas"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+demo = ["scikit-learn", "nltk", "joblib", "streamlit", "numpy", "wordcloud"]
+zeroshot = ["scikit-learn", "transformers", "torch", "sentencepiece", "protobuf"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
