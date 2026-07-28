@@ -31,11 +31,18 @@ def get_dataset():
 
 
 def pick_real_example(genre: str) -> str:
-    """Tire un vrai extrait au hasard dans le dataset (pas de paroles inventées)."""
+    """Tire un vrai extrait au hasard dans le dataset (pas de paroles inventées).
+
+    Troncature à 3000 caractères (~500-600 mots), pas 600 caractères (~100 mots) comme
+    avant : un extrait trop court prive le modèle de signal et biaise les prédictions
+    vers la classe majoritaire (VF). Vérifié empiriquement : à 600 caractères, 7% des
+    chansons Rap sont prédites correctement ; à 3000 caractères, 97% (identique à la
+    chanson entière).
+    """
     df = get_dataset()
     row = df.loc[df["genre"] == genre].sample(1).iloc[0]
     lyrics = row["lyrics"]
-    return lyrics[:600] + "…" if len(lyrics) > 600 else lyrics
+    return lyrics[:3000] + "…" if len(lyrics) > 3000 else lyrics
 
 
 model = load_model()
@@ -95,13 +102,19 @@ with col_output:
             badge_color = "blue" if pred == 1 else "orange"
 
             tokens = tokenize(lyrics)
+            stop_words = model.named_steps["tfidf"].get_stop_words() or frozenset()
+            useful_tokens = [t for t in tokens if t not in stop_words]
 
             st.badge(label, icon=":material/label:", color=badge_color)
             with st.container(horizontal=True):
                 st.metric("Confiance", f"{proba[pred]:.1%}", border=True)
                 st.metric("P(Rap)", f"{proba[1]:.1%}", border=True)
-                st.metric("Mots", len(tokens), border=True)
-                st.metric("Mots différents", len(set(tokens)), border=True)
+            with st.container(horizontal=True):
+                st.metric("Mots (bruts)", len(tokens), border=True, help="Après nettoyage léger (minuscules, ponctuation retirée), stopwords inclus (le, la, de...)")
+                st.metric("Mots différents (bruts)", len(set(tokens)), border=True)
+            with st.container(horizontal=True):
+                st.metric("Mots utiles", len(useful_tokens), border=True, help="Hors stopwords — ce que le modèle utilise réellement pour prédire")
+                st.metric("Mots différents utiles", len(set(useful_tokens)), border=True)
 
             tfidf = model.named_steps["tfidf"]
             clf = model.named_steps["model"]
