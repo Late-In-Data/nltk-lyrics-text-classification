@@ -1,0 +1,25 @@
+# Installation : pip install -r requirements.txt
+-e .
+
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+xgboost
+wordcloud
+nltk
+scikit-optimize
+jupyterlab
+notebook
+ipykernel
+pytest
+streamlit
+joblib
+
+# Optionnel : comparaison zero-shot CamemBERT (notebooks/03_zeroshot_camembert_comparison.ipynb)
+# Lourd (~650 Mo, torch + transformers) : à décommenter seulement si besoin.
+transformers
+torch
+sentencepiece
+protobuf
