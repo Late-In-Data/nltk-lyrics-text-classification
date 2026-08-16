@@ -18,8 +18,11 @@ streamlit
 joblib
 
 # Optionnel : comparaison zero-shot CamemBERT (notebooks/03_zeroshot_camembert_comparison.ipynb)
-# Lourd (~650 Mo, torch + transformers) : à décommenter seulement si besoin.
-transformers
-torch
-sentencepiece
-protobuf
+# Lourd (~650 Mo, torch + transformers) : à décommenter seulement en local si besoin.
+# Ne JAMAIS laisser décommenté en déployant sur Streamlit Cloud (qui lit ce même fichier) :
+# ça force le téléchargement de ~650 Mo inutiles à chaque déploiement, pour rien (app.py
+# n'utilise ni torch ni transformers), et peut expliquer un déploiement qui traîne ou plante.
+# transformers
+# torch
+# sentencepiece
+# protobuf
